@@ -16,6 +16,10 @@ export default {
         path: '/login',
         component: 'src/containers/Login',
       },
+      {
+        path: '/gallery',
+        component: 'src/containers/Gallery',
+      },
       // {
       //   path: '/blog',
       //   component: 'src/containers/Blog',

@@ -12,6 +12,7 @@ const App = () => (
       <nav>
         <Link exact to="/">Home</Link>
         <Link to="/login">Login</Link>
+        <Link to="/gallery">Gallery</Link>
       </nav>
       <div className="content">
         <Routes />
