@@ -12,6 +12,10 @@ export default {
         path: '/',
         component: 'src/containers/Home',
       },
+      {
+        path: '/login',
+        component: 'src/containers/Login',
+      },
       // {
       //   path: '/blog',
       //   component: 'src/containers/Blog',
