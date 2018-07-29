@@ -1,0 +1,43 @@
+
+version: "3.2"
+
+services:
+    proxy:
+        build:
+            context: docker/nginx/
+        ports:
+            - '22080:22080'
+            - '22443:443'
+        expose:
+            - "80"
+            - "443"
+        volumes:
+            - ./docker/nginx/conf:/etc/nginx/conf
+            - ./docker/nginx/logs:/var/log/nginx
+        entrypoint: ./entrypoint.sh
+        env_file:
+            - .env
+        depends_on:
+            - node
+        networks:
+            network_app:
+
+    node:
+        image: node:8.11.3-alpine
+        expose:
+            - "3000"
+        volumes:
+            - .:/source
+        env_file:
+            - .env
+        # command: "sh -c 'cd /source && npm install && node server.js'"
+        command: "sh -c 'cd /source; npm run start-dev'"
+        networks:
+            network_app:
+            network_db:
+
+networks:
+    network_app:
+        driver: bridge
+    network_db:
+        driver: bridge
