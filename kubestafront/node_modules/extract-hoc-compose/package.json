@@ -1,0 +1,20 @@
+{
+  "name": "extract-hoc-compose",
+  "version": "0.0.1",
+  "description": "Babel plugin which extracts HOCs from compose method so react-hot-loader can handle them.",
+  "main": "babel.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fenok/extract-hoc-compose.git"
+  },
+  "keywords": [
+    "react",
+    "react-hot-loader",
+    "HoC",
+    "recompose",
+    "compose"
+  ],
+  "author": "Leonid Fenko <fenok2112@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
