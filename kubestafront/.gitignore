@@ -11,5 +11,7 @@
 # node_modules/**/build/Makefile
 # node_modules/**/**/build/Makefile
 
+node_modules/.cache
+
 # build by e.g. 'yarn start'
 tmp
