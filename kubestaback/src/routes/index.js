@@ -2,20 +2,23 @@
 var fs = require('fs');
 var express = require('express');
 var router = express.Router();
-var multer = require('multer')
+var multer = require('multer');
+
+const uploadDir = 'uploads/';
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '/uploads')
+    cb(null, uploadDir)
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
+    fs.readdir(uploadDir, (err, files) => {
+      cb(null,  Date.now() + '_' + files.length + '_' + file.originalname )
+    });
   }
 })
 
 var upload = multer({
-  // storage: storage,
-  dest: 'uploads/',
+  storage: storage,
   fileFilter: function(req, file, next){
     if(!file){
       next();
@@ -34,16 +37,12 @@ var upload = multer({
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.send({"msg": "Hello World!!!"});
+  fs.readdir(uploadDir, (err, files) => {
+    res.send({"data:": {"uploads":files,},});
+  })
 });
 
-router.post('/', upload.single('image'), function(req, res, next) {
-  const { file } = req;
-
-  fs.rename( file.path, './uploads/' + Date.now() + '_' + file.originalname , function(err) {
-      if ( err ) console.log('ERROR: ' + err);
-  });
-
+router.post('/', upload.single('imgdata'), function(req, res, next) {
   res.send({"msg": "complete!"});
 });
 

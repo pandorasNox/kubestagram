@@ -1,4 +1,4 @@
-
+var path = require('path')
 var createError = require('http-errors');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -20,6 +20,7 @@ app.use(cookieParser());
 
 //app middleware ROUTING setup
 app.use('/', indexRouter);
+app.use('/static', express.static(path.join(__dirname, '../uploads')));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -34,7 +35,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send({error:err.message});
 });
 
 module.exports = app;
