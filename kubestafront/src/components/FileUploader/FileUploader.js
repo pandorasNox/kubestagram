@@ -1,7 +1,22 @@
 import React from 'react'
 import axios, { post } from 'axios';
 
+import PropTypes from 'prop-types';
+const propTypes = {
+  fileUploadUrl: PropTypes.string,
+  fileRequestKey: PropTypes.string,
+  uploadOnSuccess: PropTypes.func,
+};
 class FileUploader extends React.Component {
+  static propTypes = propTypes
+
+  static defaultProps = {
+    fileUploadUrl: 'http://example.com/file-upload',
+    fileRequestKey: 'file',
+    uploadOnSuccess: () => {},
+  }
+
+  state = {}
 
   constructor(props) {
     super(props);
@@ -14,23 +29,27 @@ class FileUploader extends React.Component {
   }
   onFormSubmit(e){
     e.preventDefault() // Stop form submit
-    this.fileUpload(this.state.file).then((response)=>{
+    const {fileUploadUrl, fileRequestKey, uploadOnSuccess} = this.props;
+    this.fileUpload(this.state.file, fileUploadUrl, fileRequestKey).then((response)=>{
       console.log(response.data);
+      uploadOnSuccess();
+    }).catch((e) => {
+      console.log("onFormSubmit.catch");
+      console.dir(e);
     })
   }
   onChange(e) {
     this.setState({file:e.target.files[0]})
   }
-  fileUpload(file){
-    const url = 'http://example.com/file-upload';
+  fileUpload(file, fileUploadUrl, fileRequestKey = 'file'){
     const formData = new FormData();
-    formData.append('file',file)
+    formData.append(fileRequestKey, file)
     const config = {
         headers: {
-            'content-type': 'multipart/form-data'
+            'content-type': 'multipart/form-data',
         }
     }
-    return  post(url, formData,config)
+    return  post(fileUploadUrl, formData, config)
   }
 
   render() {

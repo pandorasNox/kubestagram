@@ -6,6 +6,9 @@ import styled from 'styled-components'
 //components
 import { FileUploader } from '../components'
 
+//util
+import axios from 'axios'
+
 import PropTypes from 'prop-types';
 const propTypes = {};
 class Gallery extends React.Component {
@@ -15,7 +18,15 @@ class Gallery extends React.Component {
     static defaultProps = {}
 
     state = {
-        images: [],
+        images: [
+            {src: "http://via.placeholder.com/320x100", alt: "img alt text",},
+            {src: "http://via.placeholder.com/320x120",},
+            {src: "http://via.placeholder.com/320x300",},
+            {src: "http://via.placeholder.com/320x100", alt: "img alt text",},
+            {src: "http://via.placeholder.com/320x120",},
+            {src: "http://via.placeholder.com/320x300",},
+        ],
+        downloadUrl: process.env.IMAGE_SERVICE_URL || "",
     }
 
     constructor(props) {
@@ -24,44 +35,27 @@ class Gallery extends React.Component {
         this.loadImages()
     }
 
-    loadImages = () => {
-        setTimeout(() => {
-            this.setState({
-                images: [
-                    {src: "http://via.placeholder.com/320x100", alt: "img alt text",},
-                    {src: "http://via.placeholder.com/320x120",},
-                    {src: "http://via.placeholder.com/320x300",},
-                    {src: "http://via.placeholder.com/320x100", alt: "img alt text",},
-                    {src: "http://via.placeholder.com/320x120",},
-                    {src: "http://via.placeholder.com/320x300",},
-                ],
-            })
-        }, 3000)
-    }
+    loadImages = async () => {
+        const result = await axios.get(this.state.downloadUrl)
+        const { data:{data:{uploads}}, } = result;
 
-    reloadImages = () => {
-        this.setState({images: [],})
-        setTimeout(() => {
-            this.setState({
-                images: [
-                    {src: "http://via.placeholder.com/320x100", alt: "img alt text",},
-                    {src: "http://via.placeholder.com/320x120",},
-                    {src: "http://via.placeholder.com/320x300",},
-                    {src: "http://via.placeholder.com/320x100", alt: "img alt text",},
-                    {src: "http://via.placeholder.com/320x120",},
-                    {src: "http://via.placeholder.com/320x300",},
-                ],
-            })
-        }, 3000)
+        this.setState({
+            images: uploads.map((img => ({src: this.state.downloadUrl + "/static/" + img}))),
+        })
     }
 
     render() {
-        const {images} = this.state
+        const {images, downloadUrl} = this.state
+
         return (
             <React.Fragment>
                 <div>
-                    <FileUploader />
-                    <button onClick={this.reloadImages}>reload</button>
+                    <FileUploader
+                        fileUploadUrl={downloadUrl}
+                        fileRequestKey="imgdata"
+                        uploadOnSuccess={this.loadImages}
+                    />
+                    <button onClick={this.loadImages}>reload</button>
                 </div>
                 <StyledGalleryCon>
                     {images.map( (img, index) => {
@@ -91,7 +85,6 @@ const StyledGalleryCon = styled.div`
 export default () => (
   <React.Fragment>    
     <h1>Gallery</h1>
-    {/* <button onClick={()=>{}}>+ add img</button> */}
     <Gallery />
   </React.Fragment>
 )
