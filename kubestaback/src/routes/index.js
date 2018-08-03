@@ -33,12 +33,14 @@ var upload = multer({
       return next();
     }
   },
+  // limits: { fileSize: maxSize }, //1 * 1000 * 1000
 })
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   fs.readdir(uploadDir, (err, files) => {
-    res.send({"data:": {"uploads":files,},});
+    const uploadedFiles = files||[]
+    res.send({"data": {"uploads":uploadedFiles.reverse(),},});
   })
 });
 

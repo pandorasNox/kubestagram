@@ -1,4 +1,5 @@
 var path = require('path')
+var fs = require('fs');
 var createError = require('http-errors');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -13,10 +14,23 @@ var app = express();
 // ... not in use here ...
 
 //app middleware setup
+if(process.env.CORS_ALL === "true") {
+  console.log("CORS_ALL:", true)
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+}
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+const dir = './uploads';
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
 
 //app middleware ROUTING setup
 app.use('/', indexRouter);
@@ -32,6 +46,10 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  console.log("")
+  console.log("err:", err.message)
+  console.log("")
 
   // render the error page
   res.status(err.status || 500);
