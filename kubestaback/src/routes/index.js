@@ -4,7 +4,12 @@ var express = require('express');
 var router = express.Router();
 var multer = require('multer');
 
-const uploadDir = 'uploads/';
+const config = require('./../config')
+const { uploadDir } = config;
+
+if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir);
+}
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {

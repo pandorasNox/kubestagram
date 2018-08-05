@@ -28,10 +28,11 @@ services:
             - "3000"
         volumes:
             - .:/source
+        working_dir: /source
         env_file:
             - .env
         # command: "sh -c 'cd /source && npm install && node server.js'"
-        command: "sh -c 'cd /source; npm run start-dev'"
+        command: "sh -c 'npm run start-dev'"
         networks:
             network_app:
             network_db:
