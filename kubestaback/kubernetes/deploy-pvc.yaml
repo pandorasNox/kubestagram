@@ -1,0 +1,80 @@
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: img-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-storage
+  # selector:
+  #   matchLabels:
+  #     release: "stable"
+  #   matchExpressions:
+  #     - {key: environment, operator: In, values: [dev]}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubestaback
+  namespace: kubestaback
+  labels:
+    app: kubestaback
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubestaback
+  template:
+    metadata:
+      labels:
+        app: kubestaback
+    spec:
+      containers:
+        - name: nginx
+          image: davedamoon/nginx-ssl-proxy:1.1
+          env:
+            - name: TARGET_SERVICE
+              value: 127.0.0.1:3000
+          ports:
+            - name: http
+              containerPort: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "0.1"
+            limits:
+              memory: "100Mi"
+              cpu: "0.1"
+        - name: kubestaback
+          image:  kubestaback:v1
+          env:
+            - name: IMG_STORE_PATH
+              value: /source/uploads/
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "0.1"
+            limits:
+              memory: "100Mi"
+              cpu: "0.1"
+          volumeMounts:
+            - mountPath: "/source/uploads/"
+              name: img-storage-vol
+      volumes:
+        - name: img-storage-vol
+          persistentVolumeClaim:
+            claimName: img-storage
