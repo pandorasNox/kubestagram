@@ -8,3 +8,5 @@
 
 #### todo
 - pv + pvc
+    - local-pv (done)
+    - rook-ceph-pv

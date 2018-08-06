@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: img-storage
+  namespace: kubestaback
 spec:
   accessModes:
     - ReadWriteOnce
