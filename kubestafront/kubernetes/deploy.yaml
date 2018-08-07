@@ -1,0 +1,39 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubestafront
+  namespace: kubestafront
+  labels:
+    app: kubestafront
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubestafront
+  template:
+    metadata:
+      labels:
+        app: kubestafront
+    spec:
+      containers:
+        - name: kubestafront
+          image: kubestafront:v1
+          ports:
+            - name: http
+              containerPort: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "0.1"
+            limits:
+              memory: "100Mi"
+              cpu: "0.1"

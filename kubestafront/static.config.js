@@ -2,6 +2,8 @@ import axios from 'axios'
 
 export default {
   plugins: ["react-static-plugin-styled-components"],
+  siteRoot: process.env.SITE_ROOT || undefined,
+  basePath: process.env.BASE_PATH || undefined,
   getSiteData: () => ({
     title: 'React Static',
   }),
