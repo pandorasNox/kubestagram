@@ -45,7 +45,7 @@ var upload = multer({
 router.get('/', function(req, res, next) {
   fs.readdir(uploadDir, (err, files) => {
     const uploadedFiles = files||[]
-    res.send({"data": {"uploads":uploadedFiles.reverse(),},});
+    res.send({"data": {"uploads":uploadedFiles.reverse(), "msg":"Hello World"},});
   })
 });
 

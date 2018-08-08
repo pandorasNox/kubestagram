@@ -53,4 +53,6 @@ app.use(function(err, req, res, next) {
   res.send({error:err.message});
 });
 
+console.log("done")
+
 module.exports = app;

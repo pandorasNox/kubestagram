@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubestaback
+  namespace: kubestaback
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: local.mini
+    http:
+      paths:
+      - path: /kubestaback
+        backend:
+          serviceName: kubestaback
+          servicePort: 80
+  - host: minikube
+    http:
+      paths:
+      - path: /kubestaback
+        backend:
+          serviceName: kubestaback
+          servicePort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubestaback
+  namespace: kubestaback
+spec:
+  selector:
+    app: kubestaback
+  ports:
+    - name: port-1
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubestaback-node-port
+  namespace: kubestaback
+spec:
+  selector:
+    app: kubestaback
+  ports:
+    - name: port-1
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+  type: NodePort

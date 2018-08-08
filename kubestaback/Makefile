@@ -25,7 +25,26 @@ mini-build: ##@setup reuse minikube docker env and build img there
 	@eval $$(minikube docker-env) ;\
 	docker build -t kubestaback:$(V) $(PWD)
 
+.PHONY: mini-mount
+mini-mount: ##@setup pwd as mount for minikube
+	minikube mount $(PWD):/kubestaback
+
 PHONY: kube-deploy
 kube-deploy:
 	kubectl apply -f kubernetes/namespace.yaml \
 	-f kubernetes/
+
+PHONY: kube-undeploy
+kube-deploy:
+	kubectl delete -f kubernetes/
+
+PHONY: kube-deploy-dev
+kube-deploy-dev:
+	kubectl apply -f kubernetes/namespace.yaml \
+	-f kubernetes/ing-n-svc.yaml \
+	-f kubernetes/dev/
+
+PHONY: kube-undeploy-dev
+kube-deploy:
+	kubectl delete -f kubernetes/ \
+	-f kubernetes/dev/
